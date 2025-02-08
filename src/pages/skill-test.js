@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Progress } from "../components/ui/progress";
 import {
   LineChart,
@@ -8,16 +9,62 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import CircularProgress from "../components/CircularProgress";
+import UpdateScoreModal from "../components/UpdateScoreModal";
 
 export default function SkillTest() {
-  const graphData = [
-    { name: "0", value: 20 },
-    { name: "20", value: 40 },
-    { name: "40", value: 80 },
-    { name: "60", value: 100 },
-    { name: "80", value: 60 },
-    { name: "100", value: 40 },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scores, setScores] = useState({
+    rank: 4,
+    percentile: 90,
+    score: 12,
+  });
+  const getPerformanceText = (percentile, score) => {
+    // For Comparison Graph text
+    let comparisonText = "";
+    if (percentile > 72) {
+      comparisonText = `You scored ${percentile}% percentile which is higher than the average percentile 72% of all the engineers who took this assessment`;
+    } else if (percentile < 72) {
+      comparisonText = `You scored ${percentile}% percentile which is lower than the average percentile 72% of all the engineers who took this assessment`;
+    } else {
+      comparisonText = `You scored ${percentile}% percentile which is equal to the average percentile of all the engineers who took this assessment`;
+    }
+
+    // For Question Analysis text
+    let analysisText = "";
+    const scorePercentage = (score / 15) * 100;
+
+    if (scorePercentage >= 90) {
+      analysisText = `Excellent! You scored ${score} questions correct out of 15. Keep up the great work!`;
+    } else if (scorePercentage >= 75) {
+      analysisText = `Good job! You scored ${score} questions correct out of 15. You're doing well!`;
+    } else if (scorePercentage >= 50) {
+      analysisText = `You scored ${score} questions correct out of 15. There's room for improvement.`;
+    } else {
+      analysisText = `You scored ${score} questions correct out of 15. We recommend practicing more to improve your score.`;
+    }
+
+    return { comparisonText, analysisText };
+  };
+
+  const generateGraphData = (percentile) => {
+    return [
+      { name: "0", value: 20 },
+      { name: "20", value: 40 },
+      { name: "40", value: 80 },
+      { name: "60", value: 100 },
+      { name: "80", value: 60 },
+      { name: "100", value: percentile },
+    ];
+  };
+
+  const [graphData, setGraphData] = useState(
+    generateGraphData(scores.percentile)
+  );
+
+  const handleUpdateScores = (newScores) => {
+    setScores(newScores);
+    setGraphData(generateGraphData(newScores.percentile));
+  };
 
   return (
     <div>
@@ -50,7 +97,10 @@ export default function SkillTest() {
                     </p>
                   </div>
                 </div>
-                <button className="bg-blue-800 hover:bg-blue-700 text-white px-8 py-2 rounded-md self-end md:self-auto">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-blue-800 hover:bg-blue-700 text-white px-8 py-2 rounded-md self-end md:self-auto"
+                >
                   Update
                 </button>
               </div>
@@ -76,7 +126,9 @@ export default function SkillTest() {
                     </svg>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold text-blue-600">4</div>
+                    <div className="text-3xl font-bold text-blue-600">
+                      {scores.rank}
+                    </div>
                     <div className="text-gray-600 text-sm">YOUR RANK</div>
                   </div>
                 </div>
@@ -100,7 +152,9 @@ export default function SkillTest() {
                     </svg>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold text-blue-600">90%</div>
+                    <div className="text-3xl font-bold text-blue-600">
+                      {scores.percentile}%
+                    </div>
                     <div className="text-gray-600 text-sm">PERCENTILE</div>
                   </div>
                 </div>
@@ -125,7 +179,7 @@ export default function SkillTest() {
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-blue-600">
-                      12/15
+                      {scores.score}/15
                     </div>
                     <div className="text-gray-600 text-sm">CORRECT ANSWERS</div>
                   </div>
@@ -137,13 +191,10 @@ export default function SkillTest() {
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h2 className="text-lg font-semibold mb-4">Comparison Graph</h2>
               <p className="text-gray-500 mb-6">
-                You scored{" "}
-                <span className="text-gray-900 font-medium">
-                  90% percentile
-                </span>{" "}
-                which is lower than the average percentile{" "}
-                <span className="text-gray-900 font-medium">72%</span> of all
-                the engineers who took this assessment
+                {
+                  getPerformanceText(scores.percentile, scores.score)
+                    .comparisonText
+                }
               </p>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -226,19 +277,18 @@ export default function SkillTest() {
               <div className="flex flex-col">
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="text-lg font-semibold">Question Analysis</h2>
-                  <div className="text-blue-600 text-xl font-bold">12/15</div>
+                  <div className="text-blue-600 text-xl font-bold">
+                    {scores.score}/15
+                  </div>
                 </div>
 
                 <div className="flex items-start gap-8">
                   <div className="flex-1">
                     <p className="text-gray-600 text-base mb-8">
-                      You scored{" "}
-                      <span className="text-gray-900 font-medium">
-                        12 question correct
-                      </span>{" "}
-                      out of{" "}
-                      <span className="text-gray-900 font-medium">15</span>.
-                      However it still needs some improvements
+                      {
+                        getPerformanceText(scores.percentile, scores.score)
+                          .analysisText
+                      }
                     </p>
 
                     {/* Target pointer section */}
@@ -278,7 +328,7 @@ export default function SkillTest() {
 
                   {/* Circular Progress */}
                   <div className="flex-shrink-0">
-                    <CircularProgress value={12} total={15} />
+                    <CircularProgress value={scores.score} total={15} />
                   </div>
                 </div>
               </div>
@@ -286,6 +336,14 @@ export default function SkillTest() {
           </div>
         </div>
       </div>
+
+      {/* Update Scores Modal */}
+      <UpdateScoreModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onUpdate={handleUpdateScores}
+        currentScores={scores}
+      />
     </div>
   );
 }

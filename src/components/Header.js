@@ -18,7 +18,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <img
             src="https://ui-avatars.com/api/?name=Sumit+Bhade&background=0D8ABC&color=fff"
-            alt="Rahil Siddique"
+            alt="Sumit Bhade"
             className="w-10 h-10 rounded-full"
           />
           <span className="text-sm font-medium text-gray-700">Sumit Bhade</span>
