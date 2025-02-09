@@ -24,14 +24,3 @@ export const getPerformanceText = (percentile, score) => {
 
   return { comparisonText, analysisText };
 };
-
-export const generateGraphData = (percentile) => {
-  return [
-    { name: "0", value: 20 },
-    { name: "20", value: 40 },
-    { name: "40", value: 80 },
-    { name: "60", value: 100 },
-    { name: "80", value: 60 },
-    { name: "100", value: percentile },
-  ];
-};

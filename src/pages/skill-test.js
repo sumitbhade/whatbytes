@@ -5,7 +5,6 @@ import ComparisonGraph from "../components/ComparisonGraph";
 import SyllabusAnalysis from "../components/SyllabusAnalysis";
 import QuestionAnalysis from "../components/QuestionAnalysis";
 import UpdateScoreModal from "../components/UpdateScoreModal";
-import { generateGraphData } from "../lib/skillTestHelpers";
 
 export default function SkillTest() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,13 +14,8 @@ export default function SkillTest() {
     score: 12,
   });
 
-  const [graphData, setGraphData] = useState(
-    generateGraphData(scores.percentile)
-  );
-
   const handleUpdateScores = (newScores) => {
     setScores(newScores);
-    setGraphData(generateGraphData(newScores.percentile));
   };
 
   return (
@@ -35,11 +29,7 @@ export default function SkillTest() {
           <div className="lg:col-span-2 space-y-6">
             <SkillTestHeader onUpdateClick={() => setIsModalOpen(true)} />
             <QuickStatistics scores={scores} />
-            <ComparisonGraph
-              percentile={scores.percentile}
-              score={scores.score}
-              graphData={graphData}
-            />
+            <ComparisonGraph percentile={scores.percentile} />
           </div>
 
           <div className="space-y-6">
