@@ -89,7 +89,7 @@ export default function ComparisonGraph({ percentile }) {
       <p className="text-gray-600 mb-6">
         You scored {percentile}% percentile which is{" "}
         {percentile > 72 ? "higher" : "lower"} than the average percentile 72%
-        of all the engineers who took this assessment
+        of all the engineers who took this assessment.
       </p>
 
       <div className="h-[400px] w-full relative">
